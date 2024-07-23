@@ -3,25 +3,22 @@ const { Telegraf, Markup } = require('telegraf');
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 bot.start((ctx) => {
-    const username = ctx.from.username || 'Пользователь';
-    ctx.reply(
-        `Привет, ${username}! Добро пожаловать в наш бот для покупки битов. Чем могу помочь?`,
-        Markup.inlineKeyboard([
-            [Markup.button.callback('Купить бит', 'buy_beat')],
-            [Markup.button.callback('Связаться с админом', 'contact_admin')]
-        ]).extra()
-    );
+    const username = ctx.from.username || ctx.from.first_name;
+    ctx.reply(`Привет, ${username}!`, Markup.inlineKeyboard([
+        Markup.button.callback('Купить бит', 'buy_beat'),
+        Markup.button.callback('Связаться с админом', 'contact_admin')
+    ]));
 });
 
 bot.action('buy_beat', (ctx) => {
-    ctx.reply('Пока что эта кнопка не настроена.');
+    ctx.reply('Функция "Купить бит" пока не реализована.');
 });
 
 bot.action('contact_admin', (ctx) => {
-    const user = ctx.from;
-    const message = `Пользователь @${user.username || user.id} хочет связаться с администратором.`;
-    bot.telegram.sendMessage('587649362', message);
-    ctx.reply('Ваш запрос отправлен администратору.');
+    const userId = '587649362'; 
+    const username = ctx.from.username || ctx.from.first_name;
+    bot.telegram.sendMessage(userId, `Пользователь ${username} хочет связаться с администратором.`);
+    ctx.reply('Ваше сообщение отправлено администратору.');
 });
 
 bot.launch();
